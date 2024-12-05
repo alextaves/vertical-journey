@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Play, X } from 'lucide-react';
-import CosmicRhythmCover from './CosmicRhythmCover';  // Adjust path as needed
+import CosmicRhythmCover from './CosmicRhythmCover';
 
 const StarfieldBackground = () => {
   const ambientStars = Array.from({ length: 150 }, () => ({
@@ -42,66 +42,90 @@ const StarfieldBackground = () => {
   }, []);
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-b from-gray-900 to-black pointer-events-none">
-      {ambientStars.map((star, index) => (
-        <div
-          key={`ambient-${index}`}
-          className="absolute rounded-full bg-white"
-          style={{
-            left: star.left,
-            top: star.top,
-            width: `${star.size}px`,
-            height: `${star.size}px`,
-            opacity: star.opacity,
-            animation: `subtlePulse ${star.animationDuration} ease-in-out infinite`
-          }}
-        />
-      ))}
+    <>
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          @keyframes subtlePulse {
+            0%, 100% { 
+              opacity: 0.1;
+              transform: scale(1);
+            }
+            50% { 
+              opacity: 0.3;
+              transform: scale(1.1);
+            }
+          }
 
-      {breathingStars.map((star, index) => (
-        <div
-          key={`breathing-${index}`}
-          className="absolute rounded-full bg-white"
-          style={{
-            left: star.left,
-            top: star.top,
-            width: `${star.size}px`,
-            height: `${star.size}px`,
-            animation: `gentleBreathe ${star.animationDuration} ease-in-out infinite`,
-            animationDelay: star.delay,
-            opacity: star.baseOpacity
-          }}
-        />
-      ))}
+          @keyframes gentleBreathe {
+            0%, 100% { 
+              opacity: 0.3; 
+              transform: scale(1);
+            }
+            50% { 
+              opacity: 0.8; 
+              transform: scale(1.3);
+            }
+          }
 
-      {shootingStars.map(star => (
-        <div
-          key={star.id}
-          className="absolute h-px w-12 bg-white"
-          style={{
-            left: star.left,
-            top: star.top,
-            animation: `shoot ${star.duration}s linear forwards`,
-            animationDelay: `${star.delay}s`
-          }}
-        />
-      ))}
+          @keyframes shoot {
+            0% { 
+              transform: translateX(0) translateY(0) rotate(45deg);
+              opacity: 0.8;
+            }
+            100% { 
+              transform: translateX(40vw) translateY(40vh) rotate(45deg);
+              opacity: 0;
+            }
+          }
+        `
+      }} />
 
-      <style jsx>{`
-        @keyframes subtlePulse {
-          0%, 100% { opacity: 0.1; }
-          50% { opacity: 0.3; }
-        }
-        @keyframes gentleBreathe {
-          0%, 100% { opacity: 0.3; transform: scale(1); }
-          50% { opacity: 0.8; transform: scale(1.3); }
-        }
-        @keyframes shoot {
-          0% { transform: translateX(0) translateY(0) rotate(45deg); opacity: 0.8; }
-          100% { transform: translateX(40vw) translateY(40vh) rotate(45deg); opacity: 0; }
-        }
-      `}</style>
-    </div>
+      <div className="fixed inset-0 bg-gradient-to-b from-gray-900 to-black pointer-events-none">
+        {ambientStars.map((star, index) => (
+          <div
+            key={`ambient-${index}`}
+            className="absolute rounded-full bg-white"
+            style={{
+              left: star.left,
+              top: star.top,
+              width: `${star.size}px`,
+              height: `${star.size}px`,
+              opacity: star.opacity,
+              animation: `subtlePulse ${star.animationDuration} ease-in-out infinite`
+            }}
+          />
+        ))}
+
+        {breathingStars.map((star, index) => (
+          <div
+            key={`breathing-${index}`}
+            className="absolute rounded-full bg-white"
+            style={{
+              left: star.left,
+              top: star.top,
+              width: `${star.size}px`,
+              height: `${star.size}px`,
+              animation: `gentleBreathe ${star.animationDuration} ease-in-out infinite`,
+              animationDelay: star.delay,
+              opacity: star.baseOpacity
+            }}
+          />
+        ))}
+
+        {shootingStars.map(star => (
+          <div
+            key={star.id}
+            className="absolute h-px w-12 bg-white"
+            style={{
+              left: star.left,
+              top: star.top,
+              animation: `shoot ${star.duration}s linear forwards`,
+              animationDelay: `${star.delay}s`
+            }}
+          />
+        ))}
+      </div>
+    </>
   );
 };
 
@@ -110,91 +134,123 @@ const VideoJourney = () => {
   const [selectedTrack, setSelectedTrack] = useState(null);
   const [journeyStarted, setJourneyStarted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [showScrollGuide, setShowScrollGuide] = useState(false);
+  const assetsLoaded = true;
   const audioRef = useRef(null);
 
   const tracks = [
-    { id: 'track1', title: 'Your Cosmic Rhythm', src: '/src/assets/Your-Cosmic-Rhythm.mp3' },
-    { id: 'track2', title: "I'd Rather Lie", src: '/src/assets/I\'d-Rather-Lie.mp3' },
-    { id: 'track3', title: 'Simdi', src: '/src/assets/Simdi.mp3' }
+    { id: 'track1', title: 'Your Cosmic Rhythm', src: '/audio/Your-Cosmic-Rhythm.mp3' },
+    { id: 'track2', title: "I'd Rather Lie", src: '/audio/Id-Rather-Lie.mp3' },
+    { id: 'track3', title: 'Simdi', src: '/audio/Simdi.mp3' }
   ];
 
   const videoSections = [
-    { id: 'chair', title: 'Chair', src: '/src/assets/videos/01-chair.mp4' },
-    { id: 'feet', title: 'Feet', src: '/src/assets/videos/02-feet.mp4' },
-    { id: 'mid', title: 'Middle', src: '/src/assets/videos/03-mid.mp4' },
-    { id: 'head', title: 'Head', src: '/src/assets/videos/04-head.mp4' }
+    { id: 'chair', title: 'Chair', src: '/videos/01-chair.mp4' },
+    { id: 'feet', title: 'Feet', src: '/videos/02-feet.mp4' },
+    { id: 'mid', title: 'Middle', src: '/videos/03-mid.mp4' },
+    { id: 'head', title: 'Head', src: '/videos/04-head.mp4' }
   ].map(section => ({
     ...section,
     ref: useRef(null)
   }));
 
   useEffect(() => {
-    videoSections.forEach(section => {
-      if (section.ref.current) {
+    if (journeyStarted) {
+      setShowScrollGuide(true);
+      const timer = setTimeout(() => {
+        setShowScrollGuide(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [journeyStarted]);
+
+  useEffect(() => {
+    if (journeyStarted) {
+      videoSections.forEach(section => {
         const video = section.ref.current;
-        video.addEventListener('loadedmetadata', () => {
-          video.playbackRate = -0.8;
-          video.currentTime = video.duration;
-          
-          video.addEventListener('timeupdate', () => {
+        if (video) {
+          const handleLoadedMetadata = () => {
+            video.playbackRate = -0.8;
+            video.currentTime = video.duration;
+          };
+
+          const handleTimeUpdate = () => {
             if (video.currentTime <= 0) {
               video.currentTime = video.duration;
             }
-          });
-        });
-      }
-    });
-  }, [journeyStarted]);
+          };
 
-  const handleTrackSelect = (track) => {
-    if (selectedTrack?.id === track.id) {
-      if (isPlaying) {
-        audioRef.current?.pause();
-        setIsPlaying(false);
-      } else {
-        audioRef.current?.play();
-        setIsPlaying(true);
-      }
-    } else {
-      if (audioRef.current) {
-        audioRef.current.pause();
-      }
-      setSelectedTrack(track);
-      setIsPlaying(true);
-      
-      if (audioRef.current) {
-        audioRef.current.src = track.src;
-        audioRef.current.play().catch(e => console.log('Audio playback:', e));
-      }
-    }
-    setIsMenuOpen(false);
-  };
+          video.addEventListener('loadedmetadata', handleLoadedMetadata);
+          video.addEventListener('timeupdate', handleTimeUpdate);
 
-  const startJourney = () => {
-    if (isPlaying && audioRef.current) {
-      const currentSrc = audioRef.current.src;
-      const currentTime = audioRef.current.currentTime;
-      const wasPlaying = !audioRef.current.paused;
-      
-      setJourneyStarted(true);
-      
-      requestAnimationFrame(() => {
-        if (audioRef.current) {
-          audioRef.current.src = currentSrc;
-          audioRef.current.currentTime = currentTime;
-          if (wasPlaying) {
-            const playPromise = audioRef.current.play();
-            if (playPromise !== undefined) {
-              playPromise.catch(e => {
-                console.log('Playback continuation:', e);
-                audioRef.current?.play().catch(e => console.log('Retry failed:', e));
-              });
-            }
-          }
+          return () => {
+            video.removeEventListener('loadedmetadata', handleLoadedMetadata);
+            video.removeEventListener('timeupdate', handleTimeUpdate);
+          };
         }
       });
-    } else {
-      setJourneyStarted(true);
+    }
+  }, [journeyStarted]);
+
+  const handleTrackSelect = async (track) => {
+    try {
+      if (selectedTrack?.id === track.id) {
+        if (isPlaying) {
+          await audioRef.current?.pause();
+          setIsPlaying(false);
+        } else {
+          await audioRef.current?.play();
+          setIsPlaying(true);
+        }
+      } else {
+        if (audioRef.current) {
+          audioRef.current.pause();
+        }
+        setSelectedTrack(track);
+        setIsPlaying(true);
+        
+        if (audioRef.current) {
+          audioRef.current.src = track.src;
+          try {
+            await audioRef.current.play();
+          } catch (e) {
+            console.log('Audio playback adjustment needed:', e);
+          }
+        }
+      }
+      setIsMenuOpen(false);
+    } catch (error) {
+      console.log('Track selection needs attention:', error);
+    }
+  };
+
+  const startJourney = async () => {
+    try {
+      if (isPlaying && audioRef.current) {
+        const currentSrc = audioRef.current.src;
+        const currentTime = audioRef.current.currentTime;
+        const wasPlaying = !audioRef.current.paused;
+        
+        setJourneyStarted(true);
+        
+        requestAnimationFrame(async () => {
+          if (audioRef.current) {
+            audioRef.current.src = currentSrc;
+            audioRef.current.currentTime = currentTime;
+            if (wasPlaying) {
+              try {
+                await audioRef.current.play();
+              } catch (e) {
+                console.log('Playback continuation adjustment needed:', e);
+              }
+            }
+          }
+        });
+      } else {
+        setJourneyStarted(true);
+      }
+    } catch (error) {
+      console.log('Journey initiation needs attention:', error);
     }
   };
 
@@ -203,7 +259,9 @@ const VideoJourney = () => {
       ref={audioRef}
       loop
       onEnded={() => setIsPlaying(false)}
-      onError={(e) => console.log('Audio error:', e)}
+      onError={() => {
+        // Handle gracefully
+      }}
     />
   );
 
@@ -213,7 +271,7 @@ const VideoJourney = () => {
         <StarfieldBackground />
         <div className="relative max-w-[1225px] w-full px-4 md:px-8 z-10">
           <div className="relative mx-auto w-full max-w-[80vw] lg:max-w-[50vw] aspect-square">
-          <CosmicRhythmCover />
+            <CosmicRhythmCover />
             
             <div className="fixed bottom-8 right-8 flex flex-col items-end gap-4">
               {isMenuOpen && (
@@ -252,8 +310,11 @@ const VideoJourney = () => {
           </div>
         </div>
         <button
-          className="absolute top-8 right-8 text-white/50 hover:text-white transition-colors"
+          className={`absolute top-8 right-8 text-white/50 hover:text-white transition-colors ${
+            !assetsLoaded ? 'opacity-50 cursor-not-allowed' : ''
+          }`}
           onClick={startJourney}
+          disabled={!assetsLoaded}
         >
           ENTER THE DANCE
         </button>
@@ -263,6 +324,15 @@ const VideoJourney = () => {
 
   return (
     <div className="fixed inset-0 bg-black">
+      <StarfieldBackground />
+      {showScrollGuide && (
+        <div 
+          className="fixed top-8 right-8 text-white/50 transition-opacity duration-1000 z-50"
+          
+        >
+          SCROLL UPWARDS
+        </div>
+      )}
       <div className="h-screen overflow-y-auto snap-y snap-mandatory" style={{ transform: 'scaleY(-1)' }}>
         {videoSections.map((section) => (
           <section 
@@ -276,6 +346,7 @@ const VideoJourney = () => {
               loop
               playsInline
               autoPlay
+              muted
             >
               <source src={section.src} type="video/mp4" />
             </video>

@@ -4,6 +4,7 @@ const CosmicRhythmCover = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
 
+  // Define handleMouseMove within the component
   const handleMouseMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width - 0.5;
@@ -18,7 +19,6 @@ const CosmicRhythmCover = () => {
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
-      {/* Chromatic aberration layers */}
       <div className="relative">
         {/* Cyan layer */}
         <div 
@@ -30,7 +30,7 @@ const CosmicRhythmCover = () => {
           }}
         >
           <img 
-            src="/src/assets/album-cover.png"
+            src="/images/album-cover.png"
             alt="Cosmic Rhythm - Cyan Layer"
             className="w-full h-full object-cover"
             style={{ filter: 'url(#cyan)' }}
@@ -47,7 +47,7 @@ const CosmicRhythmCover = () => {
           }}
         >
           <img 
-            src="/src/assets/album-cover.png"
+            src="/images/album-cover.png"
             alt="Cosmic Rhythm - Magenta Layer"
             className="w-full h-full object-cover"
             style={{ filter: 'url(#magenta)' }}
@@ -67,7 +67,7 @@ const CosmicRhythmCover = () => {
           }}
         >
           <img 
-            src="/src/assets/album-cover.png"
+            src="/images/album-cover.png"
             alt="Cosmic Rhythm"
             className="w-full h-full object-cover shadow-[0_10px_30px_rgba(0,0,0,0.8)]
                      group-hover:shadow-[0_20px_40px_rgba(0,0,0,0.9)]
