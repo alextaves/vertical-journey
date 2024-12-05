@@ -270,13 +270,13 @@ const VideoJourney = () => {
       <div className="fixed inset-0 bg-black flex items-center justify-center">
         <StarfieldBackground />
         <div className="relative max-w-[1225px] w-full px-4 md:px-8 z-10">
-          <div className="relative mx-auto w-full max-w-[80vw] lg:max-w-[50vw] aspect-square">
+          <div className="relative mx-auto w-full max-w-[80vw] lg:max-w-[50vw] aspect-square z-[40]">
             <CosmicRhythmCover />
             
-            <div className="fixed bottom-8 right-8 flex flex-col items-end gap-4">
+            <div className="fixed bottom-8 right-8 flex flex-col items-end gap-4 z-[100]">
               {isMenuOpen && (
-                <div className="bg-black/95 p-6 rounded-lg mb-4 min-w-64">
-                  <div className="space-y-6">
+                <div className="bg-black/95 p-6 rounded-lg mb-4 min-w-64 backdrop-blur-sm bg-white/10 relative z-[60]">
+                  <div className="space-y-6 relative z-[70]">
                     {tracks.map((track) => (
                       <button
                         key={track.id}
@@ -285,7 +285,7 @@ const VideoJourney = () => {
                           selectedTrack?.id === track.id 
                             ? 'text-white' 
                             : 'text-white/50 hover:text-white'
-                        } transition-colors`}
+                        } transition-colors relative z-[80]`}
                       >
                         {track.title}
                       </button>
@@ -295,7 +295,7 @@ const VideoJourney = () => {
               )}
               
               <button
-                className="bg-white/10 backdrop-blur-sm rounded-full p-4 hover:bg-white/20 transition-all duration-300"
+                className="bg-white/10 backdrop-blur-sm rounded-full p-4 hover:bg-white/20 transition-all duration-300 relative z-[90]"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
                 {isMenuOpen ? (
@@ -327,8 +327,7 @@ const VideoJourney = () => {
       <StarfieldBackground />
       {showScrollGuide && (
         <div 
-          className="fixed top-8 right-8 text-white/50 transition-opacity duration-1000 z-50"
-          
+          className="fixed top-8 right-8 text-white/50 transition-opacity duration-1000 z-[100]"
         >
           SCROLL UPWARDS
         </div>
@@ -354,10 +353,10 @@ const VideoJourney = () => {
         ))}
       </div>
 
-      <div className="fixed bottom-8 right-8 flex flex-col items-end gap-4 z-50">
+      <div className="fixed bottom-8 right-8 flex flex-col items-end gap-4 z-[100]">
         {isMenuOpen && (
-          <div className="bg-black/95 p-6 rounded-lg mb-4 min-w-64">
-            <div className="space-y-6">
+          <div className="bg-black/95 p-6 rounded-lg mb-4 min-w-64 backdrop-blur-sm bg-white/10 relative z-[60]">
+            <div className="space-y-6 relative z-[70]">
               {tracks.map((track) => (
                 <button
                   key={track.id}
@@ -366,7 +365,7 @@ const VideoJourney = () => {
                     selectedTrack?.id === track.id 
                       ? 'text-white' 
                       : 'text-white/50 hover:text-white'
-                  } transition-colors`}
+                  } transition-colors relative z-[80]`}
                 >
                   {track.title}
                 </button>
@@ -376,7 +375,7 @@ const VideoJourney = () => {
         )}
         
         <button
-          className="bg-white/10 backdrop-blur-sm rounded-full p-4 hover:bg-white/20 transition-all duration-300"
+          className="bg-white/10 backdrop-blur-sm rounded-full p-4 hover:bg-white/20 transition-all duration-300 relative z-[90]"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
           {isMenuOpen ? (
